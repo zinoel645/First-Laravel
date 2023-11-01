@@ -8,52 +8,40 @@ use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        $data = Category::all();
+        return view('product.category.index', [
+            'data' => $data,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('product.category.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        Category::create($request->validated());
+        return redirect()->route('category.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Category $category)
     {
-        //
+        return view('product.category.edit', [
+            'each' => $category,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, $category)
     {
-        //
+        Category::where('id', $category)->update($request->validated());
+        return redirect()->route('category.index');
     }
 
     /**
@@ -61,6 +49,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('category.index');
     }
 }
