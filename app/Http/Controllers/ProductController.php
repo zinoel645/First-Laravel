@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         $fileName = time() . '.' . $request->image->extension();
         $request->image->storeAs('public/images', $fileName);
-
+          
         $product = new Product;
         $product->name = $request->input('name');
         $product->color = $request->input('color');
@@ -66,6 +66,7 @@ class ProductController extends Controller
             CategoryProduct::create([
                 'product_id' => $product->id,
                 'category_id' => $cateId,
+
             ]);
 
         }

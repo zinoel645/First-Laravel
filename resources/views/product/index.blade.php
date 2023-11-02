@@ -1,5 +1,4 @@
 <a href="{{ route('product.create') }}">Add new product</a>
-<h1>List of Categories</h1>
 <table border="1" width="100%">
     <tr>
         <th>#</th>
@@ -14,26 +13,39 @@
         <th>Update at</th>
         <th>Action</th>
     </tr>
-    @foreach ($data as $each)
-        <tr>
-            <td>{{ $each->id }}</td>
-            <td>{{ $each->name }}</td>
-            <td>{{ $each->price }}</td>
-            <td>{{ $each->image }}</td>
-            <td>{{ $each->inventory }}</td>
-            <td>{{ $each->brand }}</td>
-            <td>{{ $each->color }}</td>
-            <td>{{ $each->category_name }}</td>
-            <td>{{ $each->created_at }}</td>
-            <td>{{ $each->updated_at }}</td>
-        <td>
-            <form action="{{ route('category.destroy', ['category'=>$each->id]) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button>Delete</button>
-            </form>
-            <a href="{{ route('category.edit', ['category'=>$each->id]) }}">Edit</a>
-        </td>
-        </tr>
+    @php $currentProductId = null; @endphp
+    @foreach ($data as $product)
+        @if ($currentProductId != $product->id)
+            @php $currentProductId = $product->id; @endphp
+            <tr>
+                <td>{{ $product->id }}</td>
+                <td>{{ $product->name }}</td>
+                <td>{{ $product->price }}</td>
+                <td><img src="{{ asset('storage/images/' . $product->image) }}" style="height: 80px;width:80px;"></td>
+                <td>{{ $product->inventory }}</td>
+                <td>{{ $product->brand }}</td>
+                <td>{{ $product->color }}</td>
+                <td>
+                    @foreach ($data as $each)
+                        @if ($each->id == $product->id)
+                            {{ $each->category_name }}
+                            @if (!$loop->last)
+                                , 
+                            @endif
+                        @endif
+                    @endforeach
+                </td> 
+                <td>{{ $product->created_at }}</td>
+                <td>{{ $product->updated_at }}</td>
+                <td>
+                    <form action="{{ route('product.destroy', ['product' => $product->id]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button>Delete</button>
+                    </form>
+                    <a href="{{ route('product.edit', ['product' => $product->id]) }}">Edit</a>
+                </td>
+            </tr>
+        @endif
     @endforeach
 </table>
