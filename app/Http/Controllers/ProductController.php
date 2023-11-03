@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
-use App\Models\Category;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\CategoryProduct;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
@@ -11,54 +11,56 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
-    public function index()
+    public function index(Request $request)
     {
-        $data = DB::table('products')
+        $search = $request->get('q');
+
+        $query = DB::table('products')
             ->join('category_product', 'products.id', '=', 'category_product.product_id')
             ->join('categories', 'categories.id', '=', 'category_product.category_id')
-            ->select('products.*', 'categories.name as category_name')
-            ->get();
+            ->select('products.*', 'categories.name as category_name');
+
+        if (!empty($search)) {
+            $query->where('products.name', 'like', '%' . $search . '%')
+                ->orWhere('products.color', 'like', '%' . $search . '%')
+                ->orWhere('categories.name', 'like', '%' . $search . '%');
+        }
+
+        $data = $query->orderBy('products.id', 'asc')->paginate(10);
+        $data->appends(['q' => $search]);
+
 
         return view('product.index', [
             'data' => $data,
+            'search' => $search,
         ]);
     }
 
     public function create()
     {
-        $parentcate = Category::skip(0)->take(3)->get();
-        $childcate = Category::skip(3)->take(5)->get();
+        $categories = DB::table('categories')
+            ->select('*')
+            ->get();
         return view('product.create', [
-            'parentcate' => $parentcate,
-            'childcate' => $childcate,
+            'categories' => $categories
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        // $request->validated();
-        $request->validate([
-            'name' => 'required',
-            'color' => 'required',
-            'price' => 'required',
-            'brand' => 'required',
-            'inventory' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'categories' => 'required',
-        ]);
-
         $fileName = time() . '.' . $request->image->extension();
         $request->image->storeAs('public/images', $fileName);
-          
-        $product = new Product;
-        $product->name = $request->input('name');
-        $product->color = $request->input('color');
-        $product->price = $request->input('price');
-        $product->brand = $request->input('brand');
-        $product->inventory = $request->input('inventory');
-        $product->image = $fileName;
-        $product->save();
+
+        $validatedData = $request->validated();
+        $product = Product::create([
+            'name' => $validatedData['name'],
+            'color' => $validatedData['color'],
+            'brand' => $validatedData['brand'],
+            'price' => $validatedData['price'],
+            'inventory' => $validatedData['inventory'],
+            'image' => $fileName,
+        ]);
+
 
         $selectedCategories = $request->input('categories', []);
 
@@ -73,28 +75,67 @@ class ProductController extends Controller
         return redirect()->route('product.index');
     }
 
-    public function edit(Category $category)
+    public function edit(Product $product)
     {
+        $datas = DB::table('products')
+            ->join('category_product', 'products.id', '=', 'category_product.product_id')
+            ->join('categories', 'categories.id', '=', 'category_product.category_id')
+            ->where('category_product.product_id', $product->id)
+            ->select('products.*', 'categories.id as cate_product_id')
+            ->get();
+        $categories = DB::table('categories')
+            ->select('*')
+            ->get();
+
         return view('product.edit', [
-            'each' => $category,
+            'datas' => $datas,
+            'each' => $product,
+            'categories' => $categories,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreProductRequest $request, $category)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        Category::where('id', $category)->update($request->validated());
+        // Kiểm tra xem có tệp ảnh mới được tải lên hay không
+        if ($request->hasFile('image')) {
+            $fileName = time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/images', $fileName);
+            $product->image = $fileName;
+        }
+
+        $validatedData = $request->validated();
+        unset($validatedData['categories']);
+        unset($validatedData['image']);
+
+        $product->update($validatedData);
+
+        $selectedCategories = $request->input('categories', []);
+
+        DB::table('category_product')->where('product_id', $product->id)->delete();
+
+        if (!empty($selectedCategories)) {
+            $categoryProductData = [];
+            foreach ($selectedCategories as $categoryId) {
+                $categoryProductData[] = [
+                    'category_id' => $categoryId,
+                    'product_id' => $product->id,
+                ];
+            }
+            DB::table('category_product')->insert($categoryProductData);
+        }
         return redirect()->route('product.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Product $product)
     {
-        $category->delete();
+        DB::table('category_product')->where('product_id', $product->id)->delete();
+        $product->delete();
         return redirect()->route('product.index');
     }
 }

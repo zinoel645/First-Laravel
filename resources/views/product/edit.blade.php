@@ -73,21 +73,31 @@
 </head>
 
 <body>
-    <h1>Add New Product</h1>
+    <h1>Edit Product</h1>
     <div class="container">
-        <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('product.update', $each) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
+
             <div class="form-group">
-                <label for="product_name">Product Name</label>
-                <input type="text" name="name" value="{{ old('name') }}">
+                <label for="name">Product Name</label>
+                <input type="text" name="name" value="{{ $each->name }}">
                 @if ($errors->has('name'))
                     <span class="error">{{ $errors->first('name') }}</span>
                 @endif
             </div>
 
             <div class="form-group">
+                <label for="color">Color</label>
+                <input type="text" name="color" value="{{ $each->color }}">
+                @if ($errors->has('color'))
+                    <span class="error">{{ $errors->first('color') }}</span>
+                @endif
+            </div>
+
+            <div class="form-group">
                 <label for="price">Price</label>
-                <input type="number" name="price" value="{{ old('price') }}">
+                <input type="number" name="price" value="{{ $each->price }}">
                 @if ($errors->has('price'))
                     <span class="error">{{ $errors->first('price') }}</span>
                 @endif
@@ -95,7 +105,7 @@
 
             <div class="form-group">
                 <label for="inventory">Inventory</label>
-                <input type="number" name="inventory" value="{{ old('inventory') }}">
+                <input type="number" name="inventory" value="{{ $each->inventory }}">
                 @if ($errors->has('inventory'))
                     <span class="error">{{ $errors->first('inventory') }}</span>
                 @endif
@@ -103,23 +113,20 @@
 
             <div class="form-group">
                 <label for="brand">Brand</label>
-                <input type="text" name="brand" value="{{ old('brand') }}">
+                <input type="text" name="brand" value="{{ $each->brand }}">
                 @if ($errors->has('brand'))
                     <span class="error">{{ $errors->first('brand') }}</span>
                 @endif
             </div>
 
             <div class="form-group">
-                <label for="color">Color</label>
-                <input type="text" name="color" value="{{ old('color') }}">
-                @if ($errors->has('color'))
-                    <span class="error">{{ $errors->first('color') }}</span>
-                @endif
+                <label for="image">Keep Image</label>
+                <img src="{{ asset('storage/images/' . $each->image) }}" class="img-fluid" alt="Product Image">
             </div>
 
             <div class="form-group">
-                <label for="image">Image</label>
-                <input type="file" name="image" value="{{ old('image') }}">
+                <label for="image">Or Update Image</label>
+                <input type="file" name="image">
                 @if ($errors->has('image'))
                     <span class="error">{{ $errors->first('image') }}</span>
                 @endif
@@ -128,9 +135,11 @@
             <div class="form-group">
                 <h3>Category</h3>
                 @foreach ($categories as $cate)
-                    <label>
-                        <input type="checkbox" name="categories[]" value="{{ $cate->id }}"> {{ $cate->name }}
-                    </label>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="categories[]" value="{{ $cate->id }}"
+                            {{ in_array($cate->id, $datas->pluck('cate_product_id')->toArray()) ? 'checked' : '' }}>
+                        <label class="form-check-label">{{ $cate->name }}</label>
+                    </div>
                 @endforeach
                 @if ($errors->has('categories'))
                     <br>
@@ -141,9 +150,8 @@
                     <br>
                     <span class="error">{{ $errors->first('categories.*') }}</span>
                 @endif
-
             </div>
-            <button type="submit">Add</button>
+            <button type="submit">Save Changes</button>
         </form>
     </div>
 </body>

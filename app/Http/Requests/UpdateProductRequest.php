@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,40 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+                Rule::unique("products")->ignore($this->product),
+            ],
+            'color' => 'required',
+            'price' => [
+                'required',
+                'min:1',
+                'integer',
+            ],
+            'brand' => 'required',
+            'inventory' => [
+                'required',
+                'min:0',
+                'integer',
+            ],
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categories' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!in_array(1, $value) && !in_array(2, $value)) {
+                        $fail('Must select Wall tile or Floor tile.');
+                    }
+                }
+            ],
+            
+
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+
         ];
     }
 }
