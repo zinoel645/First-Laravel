@@ -1,0 +1,27 @@
+.element.animate {
+    animation-play-state: running; /* Kích hoạt animation khi có lớp animate */
+  }
+
+/* Fade in left  */
+
+.fade-in-left{animation:fade-in-left 1s cubic-bezier(.39,.575,.565,1.000) both}
+
+@keyframes fade-in-left{0%{transform:translateX(-50px);opacity:0}100%{transform:translateX(0);opacity:1}}
+/* Fade in right  */
+
+.fade-in-right{animation:fade-in-right 1s cubic-bezier(.39,.575,.565,1.000) both}
+
+@keyframes fade-in-right{0%{transform:translateX(50px);opacity:0}100%{transform:translateX(0);opacity:1}}
+
+
+/* Slide-in bottom */
+
+.slide-in-bottom{animation:slide-in-bottom .5s cubic-bezier(.25,.46,.45,.94) both}
+@keyframes slide-in-bottom{0%{transform:translateY(1000px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
+.jello-vertical{animation:jello-vertical 1.5s both;}
+@keyframes jello-vertical{0%{transform:scale3d(1,1,1)}30%{transform:scale3d(.75,1.25,1)}40%{transform:scale3d(1.25,.75,1)}50%{transform:scale3d(.85,1.15,1)}65%{transform:scale3d(1.05,.95,1)}75%{transform:scale3d(.95,1.05,1)}100%{transform:scale3d(1,1,1)}}
+
+
+.shake-bottom{-webkit-animation:shake-bottom 1.5s cubic-bezier(.455,.03,.515,.955) both;animation:shake-bottom .8s cubic-bezier(.455,.03,.515,.955) both;animation-iteration-count: infinite;}
+@-webkit-keyframes shake-bottom{0%,100%{-webkit-transform:rotate(0deg);transform:rotate(0deg);-webkit-transform-origin:50% 100%;transform-origin:50% 100%}10%{-webkit-transform:rotate(2deg);transform:rotate(2deg)}20%,40%,60%{-webkit-transform:rotate(-4deg);transform:rotate(-4deg)}30%,50%,70%{-webkit-transform:rotate(4deg);transform:rotate(4deg)}80%{-webkit-transform:rotate(-2deg);transform:rotate(-2deg)}90%{-webkit-transform:rotate(2deg);transform:rotate(2deg)}}@keyframes shake-bottom{0%,100%{-webkit-transform:rotate(0deg);transform:rotate(0deg);-webkit-transform-origin:50% 100%;transform-origin:50% 100%}10%{-webkit-transform:rotate(2deg);transform:rotate(2deg)}20%,40%,60%{-webkit-transform:rotate(-4deg);transform:rotate(-4deg)}30%,50%,70%{-webkit-transform:rotate(4deg);transform:rotate(4deg)}80%{-webkit-transform:rotate(-2deg);transform:rotate(-2deg)}90%{-webkit-transform:rotate(2deg);transform:rotate(2deg)}}

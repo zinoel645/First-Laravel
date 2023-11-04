@@ -12,14 +12,14 @@ class CategoryController extends Controller
     public function index()
     {
         $data = Category::all();
-        return view('product.category.index', [
+        return view('admin.product.category.index', [
             'data' => $data,
         ]);
     }
 
     public function create()
     {
-        return view('product.category.create');
+        return view('admin.product.category.create');
     }
 
     public function store(StoreCategoryRequest $request)
@@ -30,7 +30,7 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        return view('product.category.edit', [
+        return view('admin.product.category.edit', [
             'each' => $category,
         ]);
     }

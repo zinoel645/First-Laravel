@@ -1,0 +1,20 @@
+.cta {
+    display: block;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+}
+
+.cta a {
+    display: flex;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    background-color: rgba(255, 255, 255, .5);
+}
+
+.cta img {
+    height: 40px;
+}

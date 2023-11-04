@@ -26,11 +26,11 @@ class ProductController extends Controller
                 ->orWhere('categories.name', 'like', '%' . $search . '%');
         }
 
-        $data = $query->orderBy('products.id', 'asc')->paginate(10);
+        $data = $query->orderBy('products.id', 'asc')->paginate(20);
         $data->appends(['q' => $search]);
 
 
-        return view('product.index', [
+        return view('admin.product.index', [
             'data' => $data,
             'search' => $search,
         ]);
@@ -41,7 +41,7 @@ class ProductController extends Controller
         $categories = DB::table('categories')
             ->select('*')
             ->get();
-        return view('product.create', [
+        return view('admin.product.create', [
             'categories' => $categories
         ]);
     }
@@ -87,7 +87,7 @@ class ProductController extends Controller
             ->select('*')
             ->get();
 
-        return view('product.edit', [
+        return view('admin.product.edit', [
             'datas' => $datas,
             'each' => $product,
             'categories' => $categories,

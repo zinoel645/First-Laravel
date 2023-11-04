@@ -1,0 +1,17 @@
+/* Header  */
+html,
+body {
+  overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+
+body {
+  padding-top: 96px;
+}
+
+:root {
+    --primary-color: #f9ba11;
+    --secondary-color: #d7d7d7;
+    --hover-color: #ffd561;
+    --gray-color: #c5c5c5;
+}
+
