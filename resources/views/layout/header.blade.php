@@ -10,7 +10,7 @@
         <div class="navbar-collapse offcanvas-collapse px-2 text-warning" id="navbarsExampleDefault">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-warning main-menu">
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="./shop.php">Shop</a>
+                    <a class="nav-link " aria-current="page" href="{{ route('shop') }}">Shop</a>
                 </li>
 
                 <li class="nav-item dropdown">

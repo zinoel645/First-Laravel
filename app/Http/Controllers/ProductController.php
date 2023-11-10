@@ -77,20 +77,51 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $data = Product::all();
+
+
+        return view('admin.product.edit', [
+            'data' => $data,
+        ]);
+    }
+
+    public function product_detail(Product $product)
+    {
         $datas = DB::table('products')
             ->join('category_product', 'products.id', '=', 'category_product.product_id')
             ->join('categories', 'categories.id', '=', 'category_product.category_id')
             ->where('category_product.product_id', $product->id)
-            ->select('products.*', 'categories.id as cate_product_id')
-            ->get();
-        $categories = DB::table('categories')
-            ->select('*')
+            ->select('products.*', 'categories.id as cate_product_id', 'categories.name as cate_name')
             ->get();
 
-        return view('admin.product.edit', [
+        return view('product_detail', [
             'datas' => $datas,
             'each' => $product,
-            'categories' => $categories,
+        ]);
+    }
+
+    public function show_shop(Request $request)
+    {
+        $search = $request->get('q');
+
+        $query = DB::table('products')
+            ->join('category_product', 'products.id', '=', 'category_product.product_id')
+            ->join('categories', 'categories.id', '=', 'category_product.category_id')
+            ->select('products.*', 'categories.name as category_name');
+
+        if (!empty($search)) {
+            $query->where('products.name', 'like', '%' . $search . '%')
+                ->orWhere('products.color', 'like', '%' . $search . '%')
+                ->orWhere('categories.name', 'like', '%' . $search . '%');
+        }
+
+        $data = $query->orderBy('products.id', 'asc')->paginate(9);
+        $data->appends(['q' => $search]);
+
+
+        return view('shop', [
+            'data' => $data,
+            'search' => $search,
         ]);
     }
 
