@@ -15,20 +15,27 @@ class ProductController extends Controller
     {
         $search = $request->get('q');
 
-        $query = DB::table('products')
-            ->join('category_product', 'products.id', '=', 'category_product.product_id')
-            ->join('categories', 'categories.id', '=', 'category_product.category_id')
-            ->select('products.*', 'categories.name as category_name');
+        // $query = DB::table('products')
+        //     ->join('category_product', 'products.id', '=', 'category_product.product_id')
+        //     ->join('categories', 'categories.id', '=', 'category_product.category_id')
+        //     ->select('products.*', 'categories.name as category_name');
 
-        if (!empty($search)) {
-            $query->where('products.name', 'like', '%' . $search . '%')
-                ->orWhere('products.color', 'like', '%' . $search . '%')
-                ->orWhere('categories.name', 'like', '%' . $search . '%');
-        }
+        // if (!empty($search)) {
+        //     $query->where('products.name', 'like', '%' . $search . '%')
+        //         ->orWhere('products.color', 'like', '%' . $search . '%')
+        //         ->orWhere('categories.name', 'like', '%' . $search . '%');
+        // }
 
-        $data = $query->orderBy('products.id', 'asc')->paginate(20);
-        $data->appends(['q' => $search]);
-
+        $data = Product::with('category_product.category')->paginate(8);
+        $data->getCollection()->transform(function ($product) {
+            $categories = $product->category_product->map(function ($categoryProduct) { //$categoryProduct là một đối tượng từ mỗi quan hệ category_product. Nó là một bản ghi trong bảng chéo (pivot table) kết nối giữa bảng products và categories.
+                return $categoryProduct->category->name;
+                //$categoryProduct->category: Đây là một truy vấn để lấy đối tượng Category liên quan đến CategoryProduct. Nó sử dụng mối quan hệ belongsTo để xác định quan hệ giữa CategoryProduct và Category.
+            })->implode(', ');
+            return $product->setAttribute('cate', $categories);
+        });
+        // $data = $query->orderBy('products.id', 'asc')->paginate(20);
+        // $data->appends(['q' => $search]);
 
         return view('admin.product.index', [
             'data' => $data,
@@ -48,31 +55,38 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        $fileName = time() . '.' . $request->image->extension();
-        $request->image->storeAs('public/images', $fileName);
+        try {
+            DB::beginTransaction();
+            $fileName = time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/images', $fileName);
 
-        $validatedData = $request->validated();
-        $product = Product::create([
-            'name' => $validatedData['name'],
-            'color' => $validatedData['color'],
-            'brand' => $validatedData['brand'],
-            'price' => $validatedData['price'],
-            'inventory' => $validatedData['inventory'],
-            'image' => $fileName,
-        ]);
-
-
-        $selectedCategories = $request->input('categories', []);
-
-        foreach ($selectedCategories as $cateId) {
-            CategoryProduct::create([
-                'product_id' => $product->id,
-                'category_id' => $cateId,
-
+            $validatedData = $request->validated();
+            $product = Product::create([
+                'name' => $validatedData['name'],
+                'color' => $validatedData['color'],
+                'brand' => $validatedData['brand'],
+                'price' => $validatedData['price'],
+                'inventory' => $validatedData['inventory'],
+                'image' => $fileName,
             ]);
 
+
+            $selectedCategories = $request->input('categories', []);
+
+            foreach ($selectedCategories as $cateId) {
+                CategoryProduct::create([
+                    'product_id' => $product->id,
+                    'category_id' => $cateId,
+
+                ]);
+
+            }
+            DB::commit();
+            return redirect()->route('product.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to store the product.']);
         }
-        return redirect()->route('product.index');
     }
 
     public function edit(Product $product)
@@ -87,16 +101,18 @@ class ProductController extends Controller
 
     public function product_detail(Product $product)
     {
-        $datas = DB::table('products')
-            ->join('category_product', 'products.id', '=', 'category_product.product_id')
-            ->join('categories', 'categories.id', '=', 'category_product.category_id')
-            ->where('category_product.product_id', $product->id)
-            ->select('products.*', 'categories.id as cate_product_id', 'categories.name as cate_name')
-            ->get();
+        $each = Product::with('category_product.category')->where('id', $product->id)->first();
+        
+        if(!$each) {
+            abort(404, 'Product does not exist');
+        }
+
+        $each->setAttribute('cate', $each->category_product->map(function ($categoryProduct) {
+            return $categoryProduct->category->name;
+        })->implode(','));
 
         return view('product_detail', [
-            'datas' => $datas,
-            'each' => $product,
+            'each' => $each,
         ]);
     }
 

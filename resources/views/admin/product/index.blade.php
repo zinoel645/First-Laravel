@@ -30,10 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php $currentProductId = null; @endphp
                 @foreach ($data as $product)
-                    @if ($currentProductId != $product->id)
-                        @php $currentProductId = $product->id; @endphp
                         <tr>
                             <td>{{ $product->id }}</td>
                             <td>{{ $product->name }}</td>
@@ -46,14 +43,8 @@
                             <td>{{ $product->brand }}</td>
                             <td>{{ $product->color }}</td>
                             <td>
-                                @foreach ($data as $each)
-                                    @if ($each->id == $product->id)
-                                        {{ $each->category_name }}
-                                        @if (!$loop->last)
-                                            ,
-                                        @endif
-                                    @endif
-                                @endforeach
+
+                                {{ $product->cate }}
                             </td>
                             <td>{{ $product->created_at }}</td>
                             <td>{{ $product->updated_at }}</td>
@@ -67,7 +58,6 @@
                                     class="btn btn-primary btn-sm">Edit</a>
                             </td>
                         </tr>
-                    @endif
                 @endforeach
             </tbody>
         </table>

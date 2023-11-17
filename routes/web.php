@@ -6,6 +6,8 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', [MainController::class, 'index'])->name('main');
+
 Route::resource("category", CategoryController::class)->except([
     'show',
 ]);

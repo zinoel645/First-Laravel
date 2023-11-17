@@ -142,7 +142,7 @@
                                         alt="Laptop" /></a>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-3 flex-column">
-                                        <h6 class="mb-0 product-view">{{ $each->name }}</h6>
+                                        <h6 class="mb-0 product-view"><a class="text-decoration-none" href="{{ route('product_detail', ['product'=>$each->id]) }}">{{ $each->name }}</a></h6>
                                         <h6 class="text-dark mb-0 product-view">Price: {{ $each->price }}$</h6>
                                     </div>
 
@@ -212,7 +212,7 @@
                                 </a>
                                 <div class="card-body set-equal">
                                     <div class="d-flex justify-content-between mb-3 flex-column">
-                                        <h6 class="mb-0 product-view">{{ $product->name }}</h6>
+                                        <h6 class="mb-0 product-view"><a class="text-decoration-none" href="{{ route('product_detail', ['product'=>$each->id]) }}">{{ $product->name }}</a></h6>
                                         <h6 class="text-dark mb-0 product-view">Price: ${{ $product->price }}</h6>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
@@ -242,7 +242,7 @@
                             <h3 class="mb-0">{{ $each->title }}</h3>
                             <div class="mb-1 text-body-secondary"></div>
                             <p class="card-text mb-auto"></p>
-                            <a href="" class="icon-link gap-1 icon-link-hover stretched-link">
+                            <a href="{{ route('blog_detail', ['blog'=>$each->id]) }}" style="color:black" class="icon-link gap-1 icon-link-hover stretched-link">
                                 Continue reading
                                 <svg class="bi">
                                     <use xlink:href="#chevron-right" />

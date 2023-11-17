@@ -18,4 +18,9 @@ class Category extends Model
         return $this->created_at->format('d-m-Y');
     }
 
+    public function category_products()
+    {
+        return $this->hasMany('App\Models\CategoryProduct');
+    }
+
 }

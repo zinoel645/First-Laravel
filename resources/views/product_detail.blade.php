@@ -47,9 +47,7 @@
                             <div class="col-9">
                                 <h6>Categories</h6>
                                 <p>
-                                    @foreach ($datas as $cate)
-                                    {{ $cate->cate_name }},    
-                                    @endforeach
+                                    {{ $each->cate }}
                                 </p>
                             </div>
                         </div>

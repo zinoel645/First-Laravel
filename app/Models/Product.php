@@ -17,5 +17,9 @@ class Product extends Model
         'inventory',
         'image',
     ];
+    public function category_product()
+    {
+        return $this->hasMany('App\Models\CategoryProduct');
+    }
 
 }
