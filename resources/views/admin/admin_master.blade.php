@@ -40,15 +40,9 @@
                             <div class="dropdown text-end">
                                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle"
                                     id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ asset('storage/homepage/a.png') }}" alt="mdo" width="32"
-                                        height="32" class="rounded-circle">
+                                    Admin
                                 </a>
                                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                                    <li><a class="dropdown-item" href="../view/update_admin.php">Change Password</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
                                     <li><a class="dropdown-item" href="../core/controller/logout.php">Sign out</a></li>
                                 </ul>
                             </div>

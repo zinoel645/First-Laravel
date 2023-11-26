@@ -29,8 +29,8 @@
                     <div class="col-4">
                         <div class="row">
                             <div class="col-3">
-                                <img src="{{ asset('storage/homepage/tiles.svg') }}" alt="" sizes="25x25" srcset=""
-                                    width="25px" height="25px">
+                                <img src="{{ asset('storage/homepage/tiles.svg') }}" alt="" sizes="25x25"
+                                    srcset="" width="25px" height="25px">
                             </div>
                             <div class="col-9">
                                 <h6>Brand</h6>
@@ -41,8 +41,8 @@
                     <div class="col-4">
                         <div class="row">
                             <div class="col-3">
-                                <img src="{{ asset('storage/homepage/tiles.svg') }}" alt="" sizes="25x25" srcset=""
-                                    width="25px" height="25px">
+                                <img src="{{ asset('storage/homepage/tiles.svg') }}" alt="" sizes="25x25"
+                                    srcset="" width="25px" height="25px">
                             </div>
                             <div class="col-9">
                                 <h6>Categories</h6>
@@ -53,16 +53,17 @@
                         </div>
                     </div>
                 </div>
-                <form action="../core/model/add_to_cart.php?product_id=&from_product_detail" method="POST">
+                <form action="{{ route('cart.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $each->id }}">
                     <label for="quantity">Quantity : </label>
-                    <input type="number" name="quantity" value="1" required>
+                    <input type="number" name="quantity" id="qty" value="1" required>
                     <span>Available: <span class="fw-bold">
-
-                        </span><span>
-                            <br>
-                            <input type="submit" name="add_to_cart" value="Add to cart" class="btn btn-primary my-3">
+                        {{ $each->inventory }}
+                        </span></span>
+                    <br>
+                    <input type="submit" name="add_to_cart" value="Add to cart" class="btn btn-primary my-3">
                 </form>
-                <a href="#"><button class="btn btn-secondary">Download Word File</button></a>
             </div>
             <div class="col-12 py-5">
                 <ul class="nav nav-tabs">

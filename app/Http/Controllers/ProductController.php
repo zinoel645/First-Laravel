@@ -19,14 +19,17 @@ class ProductController extends Controller
         //     ->join('category_product', 'products.id', '=', 'category_product.product_id')
         //     ->join('categories', 'categories.id', '=', 'category_product.category_id')
         //     ->select('products.*', 'categories.name as category_name');
+        // $data = $query->orderBy('products.id', 'asc')->paginate(20);
 
-        // if (!empty($search)) {
-        //     $query->where('products.name', 'like', '%' . $search . '%')
-        //         ->orWhere('products.color', 'like', '%' . $search . '%')
-        //         ->orWhere('categories.name', 'like', '%' . $search . '%');
-        // }
-
-        $data = Product::with('category_product.category')->paginate(8);
+        $data = Product::with('category_product.category')
+            ->when($search, function ($query) use ($search) {
+                $query->where('products.name', 'like', '%' . $search . '%')
+                    ->orWhere('products.color', 'like', '%' . $search . '%')
+                    ->orWhereHas('category_product.category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('categories.name', 'like', '%' . $search . '%');
+                    });
+            })
+            ->paginate(8);
         $data->getCollection()->transform(function ($product) {
             $categories = $product->category_product->map(function ($categoryProduct) { //$categoryProduct là một đối tượng từ mỗi quan hệ category_product. Nó là một bản ghi trong bảng chéo (pivot table) kết nối giữa bảng products và categories.
                 return $categoryProduct->category->name;
@@ -34,8 +37,9 @@ class ProductController extends Controller
             })->implode(', ');
             return $product->setAttribute('cate', $categories);
         });
-        // $data = $query->orderBy('products.id', 'asc')->paginate(20);
-        // $data->appends(['q' => $search]);
+
+
+        $data->appends(['q' => $search]);
 
         return view('admin.product.index', [
             'data' => $data,
@@ -102,8 +106,8 @@ class ProductController extends Controller
     public function product_detail(Product $product)
     {
         $each = Product::with('category_product.category')->where('id', $product->id)->first();
-        
-        if(!$each) {
+
+        if (!$each) {
             abort(404, 'Product does not exist');
         }
 
@@ -119,21 +123,36 @@ class ProductController extends Controller
     public function show_shop(Request $request)
     {
         $search = $request->get('q');
+        $cateId = $request->get('cate');
+        $subCateId = $request->get('subcate');
 
-        $query = DB::table('products')
-            ->join('category_product', 'products.id', '=', 'category_product.product_id')
-            ->join('categories', 'categories.id', '=', 'category_product.category_id')
-            ->select('products.*', 'categories.name as category_name');
+        $data = Product::with('category_product.category')
+            ->when($cateId, function ($query) use ($cateId) {
+                $query->whereHas('category_product.category', function ($categoryQuery) use ($cateId) {
+                    $categoryQuery->where('categories.id', 'like', '%' . $cateId . '%');
+                });
+            })
+            ->when($subCateId, function ($query) use ($subCateId) {
+                $query->whereHas('category_product.category', function ($categoryQuery) use ($subCateId) {
+                    $categoryQuery->where('categories.id', 'like', '%' . $subCateId . '%');
+                });
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->where('products.name', 'like', '%' . $search . '%')
+                    ->orWhere('products.color', 'like', '%' . $search . '%')
+                    ->orWhereHas('category_product.category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('categories.name', 'like', '%' . $search . '%');
+                    });
+            })
+            ->paginate(9);
+        $data->getCollection()->transform(function ($product) {
+            $categories = $product->category_product->map(function ($categoryProduct) {
+                return $categoryProduct->category->name;
+            });
+            return $product->setAttribute('cate', $categories);
+        });
 
-        if (!empty($search)) {
-            $query->where('products.name', 'like', '%' . $search . '%')
-                ->orWhere('products.color', 'like', '%' . $search . '%')
-                ->orWhere('categories.name', 'like', '%' . $search . '%');
-        }
-
-        $data = $query->orderBy('products.id', 'asc')->paginate(9);
         $data->appends(['q' => $search]);
-
 
         return view('shop', [
             'data' => $data,

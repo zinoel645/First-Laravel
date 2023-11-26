@@ -21,13 +21,20 @@
         #logout {
             display: none;
         }
+
+        .dropdown-menu {
+            display: none;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
     @include('layout.header')
     @yield('content')
-    @include('layout.footer')    
+    @include('layout.footer')
 </body>
 
 </html>

@@ -14,34 +14,41 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                        aria-expanded="false">Wall tiles</a>
+                    <a class="nav-link dropdown-toggle" href="{{ route('shop', ['cate' => 1]) }}"
+                        data-bs-toggle="dropdown" aria-expanded="false">Wall tiles</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('shop', ['cate' => 1]) }}">All Wall tiles</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 1, 'subcate' => 3]) }}">Bathroom</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 1, 'subcate' => 4]) }}">Kitchen</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 1, 'subcate' => 7]) }}">Outdoor</a></li>
+                        <li><a class="dropdown-item" href="{{ route('shop', ['cate' => 1, 'subcate' => 6]) }}">Living
+                                room</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 1, 'subcate' => 5]) }}">Bedroom</a></li>
+                    </ul>
+                </li>
 
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item " href="shop.php?category=wallbathroom">Bathroom</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=wallkitchen">Kitchen</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=walloutdoor">Outdoor</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=wallliving">Living room</a></li>
-                        <li><a class="dropdown-item " href="shop.php?category=wallbedroom">Bedroom</a></li>
-                    </ul>
-                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                        aria-expanded="false">Floor tiles</a>
+                    <a class="nav-link dropdown-toggle" href="{{ route('shop', ['cate' => 2]) }}"
+                        data-bs-toggle="dropdown" aria-expanded="false">Floor tiles</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item " href="shop.php?category=floorbathroom">Bathroom</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=floorkitchen">Kitchen</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=flooroutdoor">Outdoor</a>
-                        </li>
-                        <li><a class="dropdown-item " href="shop.php?category=floorliving">Living room</a></li>
-                        <li><a class="dropdown-item " href="shop.php?category=floorbedroom">Bedroom</a></li>
+                        <li><a class="dropdown-item" href="{{ route('shop', ['cate' => 2]) }}">All Floor tiles</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 2, 'subcate' => 3]) }}">Bathroom</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 2, 'subcate' => 4]) }}">Kitchen</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 2, 'subcate' => 7]) }}">Outdoor</a></li>
+                        <li><a class="dropdown-item" href="{{ route('shop', ['cate' => 2, 'subcate' => 6]) }}">Living
+                                room</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop', ['cate' => 2, 'subcate' => 5]) }}">Bedroom</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('expert') }}">Expert corner</a>
                 </li>
@@ -60,15 +67,35 @@
 
         <div class="row flex-nowrap">
             <div class="col-10 button-offcanvas d-none d-lg-flex justify-content-between">
-                <a href="./user.php" class="text-decoration-none">
+                @auth
+                    @if (Auth::user()->utype === 'ADM')
+                        <a href="{{ route('admin.index') }}" class="text-decoration-none">
+                        @else
+                            <a href="{{ route('user.index') }}" class="text-decoration-none">
+                    @endif
                     <button class="btn btn-primary">
                         <i class="fas fa-user">
                         </i></button>
-                </a>
-                <div class="text-start">
-                    <a style="text-decoration: none;" href="../core/controller/logout.php" id="logout"><i
-                            class="fa-solid fa-right-from-bracket"></i>Log out</a>
-                </div>
+                    </a>
+                    <div class="text-start">
+                        Welcome, <br>
+                        {{ Auth::user()->full_name }}
+                        <a style="text-decoration: none;" href=""
+                            onclick="event.preventDefault(); document.getElementById('frmlogout').submit();"><i
+                                class="fa-solid fa-right-from-bracket"></i>Log out</a>
+                        <form id="frmlogout" action="" method="POST">
+                            @csrf
+                        </form>
+                    </div>
+                @else
+                    <a href="{{ route('admin.index') }}" class="text-decoration-none">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-user">
+                            </i></button>
+                    </a>
+                @endauth
+
+
             </div>
             <div class="col-2">
                 <button class="btn btn-primary position-relative btn-cart" style="transform:translateX(-10px)">
