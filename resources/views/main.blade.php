@@ -152,8 +152,11 @@
 
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <form action="" method="POST">
-                                            <input type="hidden" name="product_id" value="">
+                                        <form action="{{ route('cart.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $each->id }}">
+                                            <input type="hidden" name="quantity" id="qty" value="1"
+                                                required>
                                             <input type="submit" name="add_to_cart" value="Add to cart"
                                                 class="btn btn-primary">
                                         </form>
@@ -178,7 +181,7 @@
                 </a>
             </div>
             <div class="col-12 my-2 col-md-6 fade-in-right animation-element animate">
-                <a href="{{ route('expert') }}">
+                <a href="{{ route('expert.index') }}">
                     <img src="{{ asset('storage/homepage/small_banner2.jpg') }}" alt="" class="rounded-2"
                         width="100%" height="150px" style="object-fit: cover; object-position:top;">
                 </a>
@@ -216,9 +219,13 @@
                                         <h6 class="text-dark mb-0 product-view">Price: ${{ $product->price }}</h6>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <form action="" method="POST">
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <input type="submit" name="add_to_cart" value="Add to cart" class="btn btn-primary">
+                                        <form action="{{ route('cart.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $each->id }}">
+                                            <input type="hidden" name="quantity" id="qty" value="1"
+                                                required>
+                                            <input type="submit" name="add_to_cart" value="Add to cart"
+                                                class="btn btn-primary">
                                         </form>
                                     </div>
                                 </div>

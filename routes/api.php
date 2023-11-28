@@ -18,4 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::put('/cart', [CartController::class, 'updateCart']);
+// Route::put('/cart', [CartController::class, 'updateCart']);
+Route::get('/cart', [CartController::class, 'getCartItems'])->name('api.cart');

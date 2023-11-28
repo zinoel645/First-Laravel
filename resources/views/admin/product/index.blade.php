@@ -2,7 +2,8 @@
 @section('admin_content')
     <div class="container mt-5">
         <h1 class="mb-4">Product List</h1>
-        <a href="{{ route('product.create') }}" class="btn btn-primary mb-3">Add New Product</a>
+        <a href="{{ route('product.create') }}" class="btn btn-warning mb-3">Add New Product</a>
+        <a href="{{ route('category.index') }}" class="btn btn-warning mb-3">Category List</a>
         <form class="mb-3">
             <div class="form-group">
                 <label for="search">Search:</label>

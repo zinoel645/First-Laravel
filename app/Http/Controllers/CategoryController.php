@@ -30,7 +30,6 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        dd($category);
         return view('admin.product.category.edit', [
             'each' => $category,
         ]);

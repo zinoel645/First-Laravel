@@ -37,7 +37,8 @@
             </div>
             <div class="col-10 text-center text-md-end col-lg-4">
                 <form class="d-flex">
-                    <input style="margin-right: 5px;" type="search" class="form-control rounded" name="q" value="{{ $search }}">
+                    <input style="margin-right: 5px;" type="search" class="form-control rounded" name="q"
+                        value="{{ $search }}">
                     <button class="btn btn-outline-primary">Search</button>
                 </form>
             </div>
@@ -148,7 +149,11 @@
                                     <h6>Inventory : {{ $each->inventory }}</h6>
                                     <h6>Brand : {{ $each->brand }}</h6>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <form action="../core/model/add_to_cart.php?product_id=&from_shop" method="POST">
+                                        <form action="{{ route('cart.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $each->id }}">
+                                            <input type="hidden" name="quantity" id="qty" value="1"
+                                                required>
                                             <input type="submit" name="add_to_cart" value="Add to cart"
                                                 class="btn btn-primary">
                                         </form>

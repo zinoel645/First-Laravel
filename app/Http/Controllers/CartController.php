@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class CartController extends Controller
 {
@@ -13,6 +14,12 @@ class CartController extends Controller
     {
         $cartItems = Cart::instance('cart')->content();
         return view('cart', ['cartItems' => $cartItems]);
+    }
+
+    public function getCartItems()
+    {
+        $cartItems = Cart::instance('cart')->content();
+        return Response::json(['cartItems' => $cartItems]);
     }
 
     public function addToCart(Request $request)
@@ -24,15 +31,20 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        $id = $request->input('id');
-        $action = $request->input('action');
-        $cartItem = Cart::find($id);
-        if ($action === 'plus') {
-            $cartItem->quantity += 1;
-        }
+        Cart::instance('cart')->update($request->rowId, $request->quantity);
+        return redirect()->route('cart.index');
+    }
 
-        $cartItem->save();
+    public function removeItem(Request $request)
+    {
+        $rowId = $request->rowId;
+        Cart::instance('cart')->remove($rowId);
+        return redirect()->route('cart.index');
+    }
 
-        return response()->json(['message' => 'Cart item updated successfully']);
+    public function clearCart(Request $request)
+    {        
+        Cart::instance('cart')->destroy();
+        return redirect()->route('cart.index');
     }
 }

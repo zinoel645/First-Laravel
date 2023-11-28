@@ -1,51 +1,63 @@
 @extends('layout.master')
+
 @section('content')
+
+    {{-- @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif --}}
     <div class="container mt-5">
         <div class="row">
             <div class="col-12">
                 <h2>Shopping Cart</h2>
-                @if ($cartItems->Count() > 0)
-                    There are in your cart
+                @if ($cartItems->count() > 0)
+                    There are {{ $cartItems->count() }} products in your cart.
+                    <br><br>
                 @else
                     <p>Your cart is empty!</p>
                 @endif
             </div>
         </div>
-        @if ($cartItems->Count() > 0)
+        @if ($cartItems->count() > 0)
             <div class="row">
                 <div class="col-12">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col">Image</th>
-                                <th scope="col">Product Name</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Action</th>
+                                <th class="align-middle text-center" scope="col">Image</th>
+                                <th class="align-middle text-center" scope="col">Product Name</th>
+                                <th class="align-middle text-center" scope="col">Price</th>
+                                <th class="align-middle text-center" scope="col">Quantity</th>
+                                <th class="align-middle text-center" scope="col">Total</th>
+                                <th class="align-middle text-center" scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($cartItems as $item)
                                 <tr>
-                                    <td><img src="{{ asset('assets/images/' . $item->model->image) }}"
+                                    <td class="align-middle text-center"><img
+                                            src="{{ asset('storage/images/' . $item->model->image) }}"
                                             alt="{{ $item->model->name }}" style="max-width: 100px;"></td>
-                                    <td>{{ $item->model->name }}</td>
-                                    <td>${{ $item->price }}</td>
-                                    <td>
-                                        <a href="" class="btn btn-sm btn-primary">-</a>
-                                        {{ $item->qty }}
-                                        <button class="btn btn-sm btn-primary upd-qty" data-id="{{ $item->model->id }}" data-action="plus">+</button>
+                                    <td class="align-middle text-center">{{ $item->model->name }}</td>
+                                    <td class="align-middle text-center">${{ $item->price }}</td>
+                                    <td class="align-middle text-center" style="width: 5%;">
+                                        <input type="number" class="form-control" name="quantity"
+                                            onchange="updateQuantity(this)" data-rowid="{{ $item->rowId }}"
+                                            value="{{ $item->qty }}">
                                     </td>
-                                    <td>${{ $item->subtotal() }}</td>
-                                    <td>
-                                        <button class="btn btn-danger">
+                                    <td class="align-middle text-center">${{ $item->subtotal() }}</td>
+                                    <td class="align-middle text-center text-center"><a href="javascript:void(0)"
+                                            onclick="removeItemFromCart('{{ $item->rowId }}')" class="btn btn-danger">
                                             <i class="fa-solid fa-trash-can"></i> Remove
-                                        </button>
+                                        </a>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6"></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -55,17 +67,19 @@
 
             <div class="row">
                 <div class="col">
-                    <h3 class="float-right">
+                    <a class="float-right btn btn-danger btn-sm" href="javascript:void(0)" onclick="clearCart()">
+                        <i class="fa-solid fa-trash-can"></i> Clear cart
+                    </a>
+                    <h3 class="float-right mr-2">
                         Total amount:
                         ${{ Cart::instance('cart')->total() }}
-
                     </h3>
                 </div>
             </div>
         @endif
         <div class="row">
             <div class="col-6">
-                <a href="{{ route('shop') }}" class="btn btn-primary">Back to Shop</a>
+                <a href="{{ route('shop.index') }}" class="btn btn-primary">Back to Shop</a>
             </div>
             <div class="col-6 ">
                 <a href="check_out.php" class="btn btn-primary float-right">Buy now</a>
@@ -73,35 +87,37 @@
         </div>
     </div>
     <div class="mt-4"></div>
-    <script>
-        document.querySelectorAll('.upd-qty').forEach(item => item.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const id = event.target.dataset.id;
-            const action = event.target.dataset.action;
-
-            fetch(`/api/cart`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any additional headers as needed (e.g., authentication token)
-                },
-                body: JSON.stringify({ id: id, action: action }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data.message);
-                // Handle success (e.g., update UI)
-            })
-            .catch(error => {
-                console.error('Error updating cart item:', error);
-                // Handle error
-            });
-        }));
-    </script>
+    <form id="updateCartQty" action="{{ route('cart.update') }}" method="POST">
+        @csrf
+        @method('put')
+        <input type="hidden" id="rowId" name="rowId">
+        <input type="hidden" id="quantity" name="quantity">
+    </form>
+    <form id="deleteFromCart" action="{{ route('cart.remove') }}" method="POST">
+        @csrf
+        @method('delete')
+        <input type="hidden" id="rowId_D" name="rowId">
+    </form>
+    <form id="clearCart" action="{{ route('cart.clear') }}" method="POST">
+        @csrf
+        @method('delete')
+    </form>
 @endsection
+@push('scripts')
+    <script>
+        function updateQuantity(qty) {
+            $('#rowId').val($(qty).data('rowid'));
+            $('#quantity').val($(qty).val());
+            $('#updateCartQty').submit();
+        }
+
+        function removeItemFromCart(rowId) {
+            $('#rowId_D').val(rowId);
+            $('#deleteFromCart').submit();
+        }
+
+        function clearCart() {
+            $('#clearCart').submit();
+        }
+    </script>
+@endpush
