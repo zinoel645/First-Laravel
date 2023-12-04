@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class AuthController extends Controller
 {
@@ -26,7 +27,7 @@ class AuthController extends Controller
         $userData['password'] = Hash::make($userData['password']); //mã hóa mk
 
         User::create($userData);
-        return redirect()->route('login.index');
+        return redirect()->route('login');
     }
 
     public function process_login(Request $request)
@@ -41,20 +42,17 @@ class AuthController extends Controller
         if ($user && Hash::check($request->input('password'), $user->password)) {
             // Đăng nhập thành công...
             Auth::loginUsingId($user->id);
-            if ($user->utype === 'ADM') {
-                return redirect()->route('admin.index');
-            } elseif ($user->utype === 'USR') {
-                return redirect()->route('main.index');
-            }
+            return redirect()->route('main.index');
         }
 
         // Đăng nhập thất bại...
-        return redirect()->route('login.index')->with('error', 'Tên người dùng hoặc mật khẩu không đúng');
+        return redirect()->route('login')->with('error', 'Tên người dùng hoặc mật khẩu không đúng');
     }
 
     public function logout()
     {
         Auth::logout();
+        Cart::instance('cart')->destroy();
 
         return redirect()->route('main.index')->with('success', 'Bạn đã đăng xuất thành công.');
     }

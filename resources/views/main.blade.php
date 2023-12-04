@@ -83,7 +83,7 @@
         <div class="row">
             <div class="col d-flex justify-content-between align-items-center">
                 <h1 class="text-primary py-4">Ceramic Tiles Categories</h1>
-                <a href="shop.php" class="btn btn-primary">
+                <a href="{{ route('shop.index') }}" class="btn btn-primary">
                     <i class="fa-solid fa-bag-shopping"></i>
                     Go to store</a>
             </div>
@@ -103,7 +103,7 @@
                                 <p class="">Wall ceramic tiles enhance interior aesthetics with durability and
                                     versatile design options. They're easy to clean, ideal for kitchens, bathrooms, and
                                     more.</p>
-                                <a href="shop.php?category=allwall" class="btn btn-primary">Learn more</a>
+                                <a href="{{ route('shop.index', ['cate' => 1]) }}" class="btn btn-primary">Learn more</a>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                                 <p class="">Floor ceramic tiles are durable and easy to maintain. They come in various
                                     designs, suitable for any interior. Ideal for high-traffic and moisture-prone areas like
                                     kitchens and bathrooms.</p>
-                                <a href="shop.php?category=allfloor" class="btn btn-primary">Learn more</a>
+                                <a href="{{ route('shop.index', ['cate' => 2]) }}" class="btn btn-primary">Learn more</a>
                             </div>
                         </div>
                     </div>

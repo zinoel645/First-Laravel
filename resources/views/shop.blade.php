@@ -12,121 +12,196 @@
             <div class="col-12 text-center text-md-start col-lg-4">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-3 mb-md-0 justify-content-center justify-content-lg-start">
-                        <li class="breadcrumb-item"><a href="./home.php" class="fs-6">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('./home') }}" class="fs-6">Home</a></li>
                         <li class="breadcrumb-item active fs-6" aria-current="page">Shop</li>
                     </ol>
                 </nav>
             </div>
-            <div class="col-12 col-lg-4">
-                <h1 class="text-center d-lg-none">Store</h1>
-            </div>
-            <div class="col-2 d-lg-none">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasStore"
-                    aria-controls="offcanvasStore">
-                    <i class="fa-solid fa-filter"></i>
-                </button>
-                <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasStore"
-                    aria-labelledby="offcanvasStoreLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasStoreLabel">Filter</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <div class="col-12 col-lg-8 d-flex align-items-center justify-content-end">
+                <div class="select-options d-flex">
+                    <div class="page-view-filter justify-content-between">
+                        <div class="dropdown select-featured mr-2">
+                            <select class="form-select" name="orderby" id="orderby">
+                                <option value="-1" {{ $order == -1 ? 'selected' : '' }}>Default</option>
+                                <option value="1" {{ $order == 1 ? 'selected' : '' }}>Date, New To Old</option>
+                                <option value="2" {{ $order == 2 ? 'selected' : '' }}>Date, Old To New</option>
+                                <option value="3" {{ $order == 3 ? 'selected' : '' }}>Price, Low To High</option>
+                                <option value="4" {{ $order == 4 ? 'selected' : '' }}>Price, High To Low</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="offcanvas-body">
+                    <div class="dropdown select-featured justify-content-between">
+                        <select class="form-select" name="size" id="pagesize">
+                            <option value="9" {{ $size == 9 ? 'selected' : '' }}>9 Products Per Page</option>
+                            <option value="18" {{ $size == 18 ? 'selected' : '' }}>18 Products Per Page</option>
+                            <option value="27" {{ $size == 27 ? 'selected' : '' }}>27 Products Per Page</option>
+                            <option value="50" {{ $size == 50 ? 'selected' : '' }}>50 Products Per Page</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-            <div class="col-10 text-center text-md-end col-lg-4">
-                <form class="d-flex">
-                    <input style="margin-right: 5px;" type="search" class="form-control rounded" name="q"
-                        value="{{ $search }}">
-                    <button class="btn btn-outline-primary">Search</button>
+                <form class="d-none d-lg-flex ms-auto">
+                    <input type="search" class="form-control rounded" name="q" value="{{ $search }}"
+                        placeholder="Search">
+                    <button class="btn btn-outline-primary" type="button">Search</button>
                 </form>
             </div>
-
         </div>
     </div>
+
     <!-- Heading -->
 
     <!-- Main content -->
     <div class="container py-3">
         <div class="row">
             <div class="d-none col-lg-3 d-lg-block border rounded-1 p-3 filter_offcanvas">
+                <h2>Filter By</h2>
+                {{-- Color --}}
+                <div class="accordion-item category-color">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree">
+                            Color
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <ul class="category-list">
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-                <h4>Bộ lọc sản phẩm</h4>
-                <h2>Color</h2>
-                <input type="radio" name="color" value="white" onclick="filter_color('white')">
-                <label for="color">White</label>
-                <br>
-                <input type="radio" name="color" value="yellow" onclick="filter_color('yellow')">
-                <label for="color">Yellow</label>
-                <br>
-                <input type="radio" name="color" value="orange" onclick="filter_color('orange')">
-                <label for="color">Orange</label>
-                <br>
-                <input type="radio" name="color" value="red" onclick="filter_color('red')">
-                <label for="color">Red</label>
-                <br>
-                <input type="radio" name="color" value="brown" onclick="filter_color('brown')">
-                <label for="color">Brown</label>
-                <br>
-                <input type="radio" name="color" value="pink" onclick="filter_color('pink')">
-                <label for="color">Pink</label>
-                <br>
-                <input type="radio" name="color" value="black" onclick="filter_color('black')">
-                <label for="color">Black</label>
-                <br>
-                <input type="radio" name="color" value="" checked="checked" onclick="filter_color('')">
-                <label for="color">All</label>
-                <br>
+                {{-- Price --}}
+                <div class="accordion-item category-price">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFour">Price</button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="range-slider category-list">
+                                <input type="text" class="js-range-slider" id="js-range-price" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <h2>Brand</h2>
-                <input type="radio" name="brand" value="Viglacera" onclick="filter_brand('Viglacera')">
-                <label for="brand">Viglacera</label>
-                <br>
-                <input type="radio" name="brand" value="Bach Ma Tiles" onclick="filter_brand('Bach Ma Tiles')">
-                <label for="brand">Bach Ma Tiles</label>
-                <br>
-                <input type="radio" name="brand" value="Chinese Tiles" onclick="filter_brand('Chinese Tiles')">
-                <label for="brand">Chinese Tiles</label>
-                <br>
-                <input type="radio" name="brand" value="Dong Tam Brick" onclick="filter_brand('Dong Tam Brick')">
-                <label for="brand">Dong Tam Brick</label>
-                <br>
-                <input type="radio" name="brand" value="Eurotile" onclick="filter_brand('Eurotile')">
-                <label for="brand">Eurotile</label>
-                <br>
-                <input type="radio" name="brand" value="" checked="checked" onclick="filter_brand('')">
-                <label for="brand">All</label>
-                <br>
+                {{-- Category --}}
+                <div class="accordion-item category-rating">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseSix">
+                            Category
+                        </button>
+                    </h2>
+                    <div id="collapseSix" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body category-scroll">
+                            <ul class="category-list">
 
-                <h2>Size</h2>
-                <input type="radio" name="size" value="60x60" onclick="filter_size('60x60')">
-                <label for="size">60x60</label>
-                <br>
-                <input type="radio" name="size" value="80x80" onclick="filter_size('80x80')">
-                <label for="size">80x80</label>
-                <br>
-                <input type="radio" name="size" value="45x45" onclick="filter_size('45x45')">
-                <label for="size">45x45</label>
-                <br>
-                <input type="radio" name="size" value="40x80" onclick="filter_size('40x80')">
-                <label for="size">40x80</label>
-                <br>
-                <input type="radio" name="size" value="40x40" onclick="filter_size('40x40')">
-                <label for="size">40x40</label>
-                <br>
-                <input type="radio" name="size" value="25x40" onclick="filter_size('25x40')">
-                <label for="size">25x40</label>
-                <br>
-                <input type="radio" name="size" value="30x60" onclick="filter_size('30x60')">
-                <label for="size">30x60</label>
-                <br>
-                <input type="radio" name="size" value="30x90" onclick="filter_size('30x90')">
-                <label for="size">30x90</label>
-                <br>
-                <input type="radio" name="size" value="" checked onclick="filter_size('')">
-                <label for="size">All</label>
-                <br>
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct1" name="categories"
+                                            type="checkbox" value="1">
+                                        <label class="form-check-label">Qui Ut</label>
+                                        <p class="font-light">(7)</p>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct2" name="categories"
+                                            type="checkbox" value="2">
+                                        <label class="form-check-label">Blanditiis Error</label>
+                                        <p class="font-light">(8)</p>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct3" name="categories"
+                                            type="checkbox" value="3">
+                                        <label class="form-check-label">Quam Quos</label>
+                                        <p class="font-light">(0)</p>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct4" name="categories"
+                                            type="checkbox" value="4">
+                                        <label class="form-check-label">Cupiditate Minus</label>
+                                        <p class="font-light">(5)</p>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct5" name="categories"
+                                            type="checkbox" value="5">
+                                        <label class="form-check-label">Dolores Et</label>
+                                        <p class="font-light">(4)</p>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="form-check ps-0 custome-form-check">
+                                        <input class="checkbox_animated check-it" id="ct6" name="categories"
+                                            type="checkbox" value="6">
+                                        <label class="form-check-label">Quis Repudiandae</label>
+                                        <p class="font-light">(0)</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -163,8 +238,45 @@
                         </div>
                     @endforeach
                 </div>
-                {{ $data->links() }}
+                {{ $data->withQueryString()->links() }}
             </div>
         </div>
     </div>
+    <form id="frmFilter" method="GET">
+        <input type="hidden" name="page" id="page" value="{{ $page }}">
+        <input type="hidden" name="size" id="size" value="{{ $size }}">
+        <input type="hidden" name="order" id="order" value="{{ $order }}">
+        <input type="hidden" name="prange" id="prange" value="">
+    </form>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('#pagesize').on('change', function() {
+                $('#size').val($('#pagesize option:selected').val());
+                $('#page').val($('#pagesize option:selected').val());
+                $('#frmFilter').submit();
+            });
+
+            $('#orderby').on('change', function() {
+                $('#order').val($('#orderby option:selected').val());
+                $('#frmFilter').submit();
+            });
+
+            var $range = $(".js-range-slider");
+            instance = $range.data("ionRangeSlider");
+            instance.update({
+                from: {{ $from }},
+                to: {{ $to }},
+                step: 1
+            });
+
+            $('#prange').on('change', function() {
+                setTimeout(() => {
+                    $('#frmFilter').submit();
+                }, 1000);
+            });
+        });
+    </script>
+@endpush

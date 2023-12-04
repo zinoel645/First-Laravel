@@ -17,14 +17,16 @@
                     <a class="nav-link dropdown-toggle" href="{{ route('shop.index', ['cate' => 1]) }}"
                         data-bs-toggle="dropdown" aria-expanded="false">Wall tiles</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 1]) }}">All Wall tiles</a></li>
+                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 1]) }}">All Wall tiles</a>
+                        </li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 1, 'subcate' => 3]) }}">Bathroom</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 1, 'subcate' => 4]) }}">Kitchen</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 1, 'subcate' => 7]) }}">Outdoor</a></li>
-                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 1, 'subcate' => 6]) }}">Living
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop.index', ['cate' => 1, 'subcate' => 6]) }}">Living
                                 room</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 1, 'subcate' => 5]) }}">Bedroom</a></li>
@@ -35,14 +37,16 @@
                     <a class="nav-link dropdown-toggle" href="{{ route('shop.index', ['cate' => 2]) }}"
                         data-bs-toggle="dropdown" aria-expanded="false">Floor tiles</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 2]) }}">All Floor tiles</a></li>
+                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 2]) }}">All Floor
+                                tiles</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 2, 'subcate' => 3]) }}">Bathroom</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 2, 'subcate' => 4]) }}">Kitchen</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 2, 'subcate' => 7]) }}">Outdoor</a></li>
-                        <li><a class="dropdown-item" href="{{ route('shop.index', ['cate' => 2, 'subcate' => 6]) }}">Living
+                        <li><a class="dropdown-item"
+                                href="{{ route('shop.index', ['cate' => 2, 'subcate' => 6]) }}">Living
                                 room</a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('shop.index', ['cate' => 2, 'subcate' => 5]) }}">Bedroom</a></li>
@@ -71,20 +75,24 @@
                     @if (Auth::user()->utype === 'ADM')
                         <a href="{{ route('admin.index') }}" class="text-decoration-none">
                         @else
-                            <a href="{{ route('user.index') }}" class="text-decoration-none">
+                            <a href="{{ route('my_acc') }}" class="text-decoration-none">
                     @endif
                     <button class="btn btn-primary">
                         <i class="fas fa-user">
                         </i></button>
                     </a>
                     <div class="text-start">
-                        Welcome, <br>
-                        {{ Auth::user()->full_name }}
+                        Welcome,
+                        @if (Auth::user()->utype === 'ADM')
+                            Admin
+                        @else
+                            {{ substr(Auth::user()->full_name, 0, 8) }}...
+                        @endif
                         <a style="text-decoration: none;" href="{{ route('logout') }}"><i
                                 class="fa-solid fa-right-from-bracket"></i>Log out</a>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="text-decoration-none">
+                    <a href="{{ route('my_acc') }}" class="text-decoration-none">
                         <button class="btn btn-primary">
                             <i class="fas fa-user">
                             </i></button>
@@ -94,32 +102,40 @@
 
             </div>
             <div class="col-2">
-                <button class="btn btn-primary position-relative btn-cart" style="transform:translateX(-10px)">
+                <button class="btn btn-primary position-relative btn-cart" style="transform: translateX(-10px)">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span
                         class="check-empty-cart position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ Cart::instance('cart')->content()->count() }}
                         <span class="position-unset"></span>
                     </span>
                     <div class="header_cart position-absolute z-2 rounded-1 border">
                         @if (Cart::instance('cart')->content()->count() > 0)
-                            <div class="header__cart-heading">
-                                <p>Products have been added:</p>
+                            {{ $cartItems = Cart::instance('cart')->content() }}
+                            <div class="header__cart-heading p-2 bg-light">
+                                <p class="mb-0">Products have been added:</p>
                             </div>
                             <div class="header__cart-body">
-                                {{-- @foreach ($cartItems as $item)
-                                    <div class="container px-0 py-2 pe-2">
+                                @foreach ($cartItems as $item)
+                                    <div class="container p-2">
                                         <div class="row gx-3">
-                                            <div class="col-3"><img src="{{ asset('storage/images/' . $item->model->image) }}" 
-                                                alt="{{ $item->model->name }}" class="w-100">
+                                            <div class="col-3"><a
+                                                    href="{{ route('product_detail', ['product' => $item->model->id]) }}">
+                                                    <img src="{{ asset('storage/images/' . $item->model->image) }}"
+                                                        alt="{{ $item->model->name }}" class="w-100">
+                                                </a>
                                             </div>
-                                            <div class="col-9">
-                                                <div class="row gx-2">
-                                                    <div class="col-8 text-start">
-                                                        <p class="text-dark mb-0">
-                                                            {{ $item->model->name }}
-                                                        </p>
+                                            <div class="col-9 flex-column">
+                                                <div class="row gx-2 flex-wrap">
+                                                    <div class="col-12 text-start">
+                                                        <a
+                                                            href="{{ route('product_detail', ['product' => $item->model->id]) }}">
+                                                            <p class="text-dark mb-0">
+                                                                {{ $item->model->name }}
+                                                            </p>
+                                                        </a>
                                                     </div>
-                                                    <div class="col-4 text-end">
+                                                    <div class="col-12 text-end">
                                                         <p class="text-warning  mb-0">Price: ${{ $item->price }}</p>
                                                     </div>
                                                 </div>
@@ -128,35 +144,44 @@
                                                         <p class="text-gray mb-0">Quantity: {{ $item->qty }}</p>
                                                     </div>
                                                     <div class="col-6 text-end">
-                                                        <a href="" class="text-danger ">Delete</a>
+                                                        <a href="javascript:void(0)"
+                                                            onclick="removeItemFromCart('{{ $item->rowId }}')"
+                                                            class="text-danger">Delete
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach --}}
+                                @endforeach
                             </div>
-
 
                             <div class="header__cart-footer py-2">
                                 <div class="d-flex justify-content-around">
                                     <a href="{{ route('cart.index') }}" class="btn btn-primary">Check cart</a>
-                                    <a href="" class="btn btn-primary">Checkout</a>
+                                    <a href="{{ route('cart.checkout') }}" class="btn btn-primary">Checkout</a>
                                 </div>
                             </div>
                         @else
-                            <div class="header__cart-heading">
+                            <div class="header__cart-heading p-2 bg-light">
                                 <p>Your cart is empty.</p>
                             </div>
                             <div class="header__cart-footer py-2">
                                 <div class="d-flex justify-content-around">
-                                    <a href="{{ route('shop') }}" class="btn btn-primary">Go to shop</a>
+                                    <a href="{{ route('shop.index') }}" class="btn btn-primary">Go to shop</a>
                                 </div>
                             </div>
                         @endif
                     </div>
+                </button>
             </div>
+
         </div>
         </button>
     </div>
 </nav>
+<form id="deleteFromCart" action="{{ route('cart.remove') }}" method="POST">
+    @csrf
+    @method('delete')
+    <input type="hidden" id="rowId_D" name="rowId">
+</form>

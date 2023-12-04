@@ -36,6 +36,7 @@ class StoreUserRequest extends FormRequest
             ],
             'email' => [
                 'required',
+                'unique:users,email',
                 'email:rfc,dns',
             ],
             'phone' => [
@@ -59,6 +60,7 @@ class StoreUserRequest extends FormRequest
             'full_name.required' => 'The full name field is required.',
             'email.required' => 'The email field is required.',
             'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'The email has already been taken.',
             'phone.required' => 'The phone field is required.',
             'phone.digits' => 'Phone must be exactly :digits digits.',
             'address.required' => 'The address field is required.',

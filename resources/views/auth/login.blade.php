@@ -1,12 +1,11 @@
 @extends('layout.master')
 @section('content')
-    {{-- @if (session('message'))
-        <span style="color:green;">
-            <script>
-                alert('ấdf')
-            </script>
-        </span>
-    @endif --}}
+    @if (session('login-alert'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ session('login-alert') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <section>
         <div style="margin: 80px 0;" class="row justify-content-center align-items-center h-100">
             <div class="col-md-6 col-lg-4 text-center">

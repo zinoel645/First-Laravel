@@ -13,6 +13,47 @@ class ShopController extends Controller
         $cateId = $request->get('cate');
         $subCateId = $request->get('subcate');
 
+        $page = $request->query('page');
+        $size = $request->query('size');
+        if (!$page)
+            $page = 1;
+        if (!$size)
+            $size = 9;
+        $order = $request->query('order');
+
+        if (!$order)
+            $order = -1;
+        $o_column = "";
+        $o_order = "";
+        switch ($order) {
+            case 1:
+                $o_column = "created_at";
+                $o_order = "DESC";
+                break;
+            case 2:
+                $o_column = "created_at";
+                $o_order = "ASC";
+                break;
+            case 3:
+                $o_column = "price";
+                $o_order = "ASC";
+                break;
+            case 4:
+                $o_column = "price";
+                $o_order = "DESC";
+                break;
+            default:
+                $o_column = "created_at";
+                $o_order = "DESC";
+                break;
+        }
+
+        $prange = $request->query('prange');
+        if (!$prange)
+            $prange = "0,20";
+        $from = explode(",", $prange)[0];
+        $to = explode(",", $prange)[1];
+
         $data = Product::with('category_product.category')
             ->when($cateId, function ($query) use ($cateId) {
                 $query->whereHas('category_product.category', function ($categoryQuery) use ($cateId) {
@@ -31,7 +72,7 @@ class ShopController extends Controller
                         $categoryQuery->where('categories.name', 'like', '%' . $search . '%');
                     });
             })
-            ->paginate(9);
+            ->whereBetween('price', array($from, $to))->orderBy($o_column, $o_order)->paginate($size);
         $data->getCollection()->transform(function ($product) {
             $categories = $product->category_product->map(function ($categoryProduct) {
                 return $categoryProduct->category->name;
@@ -44,6 +85,11 @@ class ShopController extends Controller
         return view('shop', [
             'data' => $data,
             'search' => $search,
+            'page' => $page,
+            'size' => $size,
+            'order' => $order,
+            'from' => $from,
+            'to' => $to,
         ]);
     }
 

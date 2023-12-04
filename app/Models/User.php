@@ -77,4 +77,8 @@ class User extends Model implements AuthenticatableContract
     {
         return 'remember_token';
     } 
+
+    public function order() {
+        return $this->hasMany('App\Models\Order');
+    }
 }

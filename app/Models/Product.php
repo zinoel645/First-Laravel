@@ -22,4 +22,9 @@ class Product extends Model
         return $this->hasMany('App\Models\CategoryProduct');
     }
 
+    public function order_item()
+    {
+        return $this->hasMany('App\Models\OrderItem');
+    }
+
 }

@@ -1,7 +1,6 @@
 @extends('layout.master')
 
 @section('content')
-
     {{-- @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -72,7 +71,7 @@
                     </a>
                     <h3 class="float-right mr-2">
                         Total amount:
-                        ${{ Cart::instance('cart')->total() }}
+                        ${{ Cart::instance('cart')->subtotal() }}
                     </h3>
                 </div>
             </div>
@@ -82,7 +81,7 @@
                 <a href="{{ route('shop.index') }}" class="btn btn-primary">Back to Shop</a>
             </div>
             <div class="col-6 ">
-                <a href="check_out.php" class="btn btn-primary float-right">Buy now</a>
+                <a href="{{ route('cart.checkout') }}" class="btn btn-primary float-right">Buy now</a>
             </div>
         </div>
     </div>
@@ -93,11 +92,7 @@
         <input type="hidden" id="rowId" name="rowId">
         <input type="hidden" id="quantity" name="quantity">
     </form>
-    <form id="deleteFromCart" action="{{ route('cart.remove') }}" method="POST">
-        @csrf
-        @method('delete')
-        <input type="hidden" id="rowId_D" name="rowId">
-    </form>
+
     <form id="clearCart" action="{{ route('cart.clear') }}" method="POST">
         @csrf
         @method('delete')
@@ -109,11 +104,6 @@
             $('#rowId').val($(qty).data('rowid'));
             $('#quantity').val($(qty).val());
             $('#updateCartQty').submit();
-        }
-
-        function removeItemFromCart(rowId) {
-            $('#rowId_D').val(rowId);
-            $('#deleteFromCart').submit();
         }
 
         function clearCart() {
