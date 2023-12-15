@@ -6,6 +6,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <section>
         <div style="margin: 80px 0;" class="row justify-content-center align-items-center h-100">
             <div class="col-md-6 col-lg-4 text-center">

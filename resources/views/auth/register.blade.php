@@ -6,7 +6,7 @@
                 <img src="{{ asset('storage/homepage/logo.png') }}" class="img-fluid mb-4" alt="Sample image">
             </div>
             <div class="col-md-6 col-lg-4">
-                <form action="{{ route('user_store') }}" method="POST">
+                <form action="{{ route('verify') }}" method="POST">
                     @csrf <!-- CSRF protection -->
                     <div class="mb-3">
                         <div class="row">

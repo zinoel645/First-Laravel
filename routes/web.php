@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/verify', [AuthController::class, 'check_otp'])->name('verify');
+Route::get('/verify_form', [AuthController::class, 'showVerifyForm'])->name('verify_form');
 Route::post('/user_store', [AuthController::class, 'store'])->name('user_store');
 Route::post('/login', [AuthController::class, 'process_login'])->name('process_login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

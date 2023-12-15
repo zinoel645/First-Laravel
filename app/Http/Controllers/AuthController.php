@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OtpMail;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -21,13 +23,41 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function store(StoreUserRequest $request)
+    public function check_otp(StoreUserRequest $request)
     {
-        $userData = $request->validated();
-        $userData['password'] = Hash::make($userData['password']); //mã hóa mk
+        // Lấy thông tin người dùng từ session (nếu có)
+        $userData = session()->get('user_data', []);
 
-        User::create($userData);
-        return redirect()->route('login');
+        // Cập nhật thông tin người dùng từ request
+        $userData = array_merge($userData, $request->validated());
+
+        $otpCode = rand(100000, 999999);
+        Mail::to($userData['email'])->send(new OtpMail($otpCode));
+
+        session(['otp_code' => $otpCode, 'user_data' => $userData]);
+        return redirect()->route('verify_form');
+    }
+
+    public function showVerifyForm()
+    {
+        return view('auth.check_otp');
+    }
+
+    public function store(Request $request)
+    {
+        $otpCode = session('otp_code');
+        $userData = session('user_data', []);
+
+        if ($request->code == $otpCode) {
+
+            $userData['password'] = Hash::make($userData['password']); //mã hóa mk
+
+            User::create($userData);
+            session()->flash('success', 'Register successfully!');
+            return redirect()->route('login');
+        } else {
+            return view('auth.check_otp')->withErrors(['code' => ['Invalid OTP code.']]);
+        }
     }
 
     public function process_login(Request $request)
@@ -46,7 +76,7 @@ class AuthController extends Controller
         }
 
         // Đăng nhập thất bại...
-        return redirect()->route('login')->with('error', 'Tên người dùng hoặc mật khẩu không đúng');
+        return redirect()->route('login')->with('error', 'Username or password is incorrect!');
     }
 
     public function logout()
@@ -54,7 +84,7 @@ class AuthController extends Controller
         Auth::logout();
         Cart::instance('cart')->destroy();
 
-        return redirect()->route('main.index')->with('success', 'Bạn đã đăng xuất thành công.');
+        return redirect()->route('main.index')->with('logout_success', 'Logout successfully!');
     }
 
 

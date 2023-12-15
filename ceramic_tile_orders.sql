@@ -16,28 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `migrations`
+-- Table structure for table `orders`
 --
 
-DROP TABLE IF EXISTS `migrations`;
+DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `migrations` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) NOT NULL,
-  `batch` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `orders` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `name_receiver` varchar(50) NOT NULL,
+  `phone_receiver` varchar(20) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `status` int NOT NULL DEFAULT '0',
+  `total_price` int NOT NULL,
+  `purchase_method` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `orders_user_id_foreign` (`user_id`),
+  CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `migrations`
+-- Dumping data for table `orders`
 --
 
-LOCK TABLES `migrations` WRITE;
-/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (5,'2023_11_01_140019_create_categogies_table',2),(36,'2019_12_14_000001_create_personal_access_tokens_table',3),(37,'2023_11_01_120621_create_products_table',3),(38,'2023_11_01_143421_create_categories_table',3),(39,'2023_11_02_022912_create_category_product_table',3),(40,'2023_11_06_114034_create_blogs_table',3),(58,'2023_11_17_155802_create_users_table',4),(59,'2023_11_28_170702_create_orders_table',4),(60,'2023_11_28_170723_create_order_items_table',4);
-/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,2,'Zinoel Nguyen','0332395194','Yên Sở',2,15,2,'2023-12-01 01:38:36'),(2,2,'Zinoel Nguyen','0332395194','Yên Sở',3,210,1,'2023-12-01 02:56:43'),(3,2,'Zinoel Nguyen','0332395194','Yên Sở',3,75,1,'2023-12-01 03:27:07'),(4,2,'Zinoel Nguyen','0332395194','Yên Sở',2,30,1,'2023-12-04 02:05:41'),(5,2,'Zinoel Nguyen','0332395194','Yên Sở',2,13,1,'2023-12-04 02:08:07'),(6,2,'Zinoel Nguyen','0332395194','Yên Sở',2,13,1,'2023-12-04 02:08:38');
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-04  9:55:50
+-- Dump completed on 2023-12-04  9:55:49
